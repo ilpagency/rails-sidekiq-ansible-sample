@@ -1,0 +1,20 @@
+; staging
+
+[plebius]
+plebius.myawesomestartup.com
+
+[plebius:vars]
+ansible_env_name=staging
+rails_env_name=production
+database_name={{ lookup('env', 'PLEBIUS_DB_NAME') }}
+database_username={{ lookup('env', 'PLEBIUS_DB_LOGIN') }}
+database_password={{ lookup('env', 'PLEBIUS_DB_PASSWORD') }}
+database_host{{ lookup('env', 'PLEBIUS_DB_HOST') }}
+database_port={{ lookup('env', 'PLEBIUS_DB_PORT') }}
+git_branch=develop
+app_path=/srv/www/plebius.myawesomestartup.com
+custom_server_options=--friendly-error-pages
+sidekiq_process_number=4
+
+[hosts:children]
+plebius

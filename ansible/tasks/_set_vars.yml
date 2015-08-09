@@ -1,0 +1,10 @@
+---
+- set_fact: app_name="myawesomestartup"
+- set_fact: ruby_version="2.2.2"
+- set_fact: ruby_gemset="myawesomestartup"
+- set_fact: git_repo=""
+- set_fact: keep_releases="5"
+- set_fact: full_app_name="{{ app_name }}-{{ ansible_env_name }}"
+- set_fact: full_gemset_name="{{ ruby_gemset }}-{{ ansible_env_name }}"
+- set_fact: current_path="{{ app_path }}/current"
+- set_fact: shared_path="{{ app_path }}/shared"

@@ -1,0 +1,3 @@
+---
+- name: start passenger
+  shell: "{{ rvm_wrapper_command }} bundle exec passenger start -d -S {{ app_sock }} --environment {{ rails_env_name }} --pid-file {{ app_pid }} {{ custom_server_options }}"

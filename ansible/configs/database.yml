@@ -1,0 +1,8 @@
+{{rails_env_name}}:
+  adapter: mysql2
+  database: {{database_name}}
+  username: {{database_username}}
+  password: {{database_password}}
+  host: {{database_host}}
+  port: {{database_port}}
+  secure_auth: false

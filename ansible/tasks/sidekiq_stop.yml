@@ -1,0 +1,5 @@
+---
+- name: stop sidekiq
+  shell: "{{ rvm_wrapper_command }} bundle exec sidekiqctl stop {{ pids_path }}/sidekiq-{{ item }}.pid 20"
+  ignore_errors: yes
+  with_sequence: count={{ sidekiq_process_number }}

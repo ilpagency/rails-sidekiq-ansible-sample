@@ -1,0 +1,30 @@
+---
+- hosts: hosts
+  tasks:
+    - include: tasks/_set_vars.yml tags=always
+
+    - set_fact: socks_path={{ shared_path }}/tmp/unicorn
+      tags: always
+
+    - name: Ensure sockets directory exists
+      file: path={{ socks_path }} state=directory
+      tags: always
+
+    - set_fact: app_sock={{ socks_path }}/ilp-app-unicorn.sock
+      tags: always
+
+    - set_fact: pids_path={{ shared_path }}/tmp/pids
+      tags: always
+
+    - name: Ensure pids directory exists
+      file: path={{ pids_path }} state=directory
+      tags: always
+
+    - set_fact: app_pid={{ pids_path }}/passenger.pid
+      tags: always
+
+    - set_fact: rvm_wrapper_command="cd {{ current_path }} && RAILS_ENV={{ rails_env_name }} rvm ruby-{{ ruby_version }}@{{ full_gemset_name }} --create do"
+      tags: always
+
+    - include: tasks/app_stop.yml tags=app_stop
+    - include: tasks/app_start.yml tags=app_start

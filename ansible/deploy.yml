@@ -1,0 +1,5 @@
+---
+- hosts: hosts
+- include: release.yml
+- include: app.yml
+- include: sidekiq.yml

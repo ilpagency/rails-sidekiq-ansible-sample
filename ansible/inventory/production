@@ -1,0 +1,37 @@
+; production
+
+[prima]
+prima.myawesomestartup.com
+
+[prima:vars]
+ansible_env_name=production
+rails_env_name=production
+database_name={{ lookup('env', 'PRIMA_DB_NAME') }}
+database_username={{ lookup('env', 'PRIMA_DB_LOGIN') }}
+database_password={{ lookup('env', 'PRIMA_DB_PASSWORD') }}
+database_host{{ lookup('env', 'PRIMA_DB_HOST') }}
+database_port={{ lookup('env', 'PRIMA_DB_PORT') }}
+git_branch=master
+app_path=/srv/www/prima.myawesomestartup.com
+custom_server_options=--no-friendly-error-pages
+sidekiq_process_number=4
+
+[secunda]
+secunda.myawesomestartup.com
+
+[secunda:vars]
+ansible_env_name=production
+rails_env_name=production
+database_name={{ lookup('env', 'SECUNDA_DB_NAME') }}
+database_username={{ lookup('env', 'SECUNDA_DB_LOGIN') }}
+database_password={{ lookup('env', 'SECUNDA_DB_PASSWORD') }}
+database_host{{ lookup('env', 'SECUNDA_DB_HOST') }}
+database_port={{ lookup('env', 'SECUNDA_DB_PORT') }}
+git_branch=master
+app_path=/srv/www/secunda.myawesomestartup.com
+custom_server_options=--no-friendly-error-pages
+sidekiq_process_number=4
+
+[hosts:children]
+prima
+secunda

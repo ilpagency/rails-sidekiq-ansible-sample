@@ -1,0 +1,32 @@
+default: &default
+development:
+  adapter: mysql2
+  encoding: utf8
+
+development:
+  <<: *default
+  database: myawesomestartup_development
+  username: root
+  password: my_password
+  host: 127.0.0.1
+  port: 3306
+  secure_auth: false
+
+test:
+  <<: *default
+  database: myawesomestartup_test
+  username: root
+  password: my_password
+  host: 127.0.0.1
+  port: 3306
+  secure_auth: false
+
+production:
+  <<: *default
+  database: myawesomestartup_production
+  username: root
+  password: my_password
+  host: 127.0.0.1
+  port: 3306
+  secure_auth: false
+

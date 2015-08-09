@@ -1,0 +1,4 @@
+---
+- name: start sidekiq
+  shell: "{{ rvm_wrapper_command }} bundle exec sidekiq --index {{ item }} --pidfile {{ pids_path }}/sidekiq-{{ item }}.pid --environment {{ rails_env_name }} --logfile {{ shared_path }}/log/sidekiq.log --daemon"
+  with_sequence: count={{ sidekiq_process_number }}

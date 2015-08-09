@@ -1,0 +1,4 @@
+---
+- name: stop passenger
+  shell: "{{ rvm_wrapper_command }} bundle exec passenger stop --pid-file {{ app_pid }}"
+  ignore_errors: yes

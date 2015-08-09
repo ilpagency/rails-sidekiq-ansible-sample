@@ -1,0 +1,91 @@
+---
+- hosts: hosts
+  tasks:
+    - include: tasks/_set_vars.yml tags=always
+
+    #
+    # ensure directories existance
+    #
+
+    - set_fact: timestamp="{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+    - set_fact: release_path="{{ app_path }}/releases/{{ timestamp }}"
+
+    - name: Ensure shared directory exists
+      file: path={{ shared_path }} state=directory
+
+    - name: Ensure shared/assets directory exists
+      file: path={{ shared_path }}/assets state=directory
+
+    - name: Ensure tmp directory exists
+      file: path={{ shared_path }}/tmp state=directory
+
+    - name: Ensure log directory exists
+      file: path={{ shared_path }}/log state=directory
+
+    - name: Ensure bundle directory exists
+      file: path={{ shared_path }}/bundle state=directory
+
+    #
+    # prepare release directory
+    #
+
+    - name: Leave only last releases
+      shell: "cd {{ app_path }}/releases && find ./ -maxdepth 1 | grep -G .............. | sort -r | tail -n +{{ keep_releases }} | xargs rm -rf"
+
+    - name: Create release directory
+      file: path={{ release_path }} state=directory
+
+    #
+    # checkout git
+    #
+
+    - name: Checkout git repo into release directory
+      git:
+        repo={{ git_repo }}
+        dest={{ release_path }}
+        version={{ git_branch }}
+        accept_hostkey=yes
+
+    - name: Get git branch head hash
+      shell: "cd {{ release_path }} && git rev-parse --short HEAD"
+      register: git_head_hash
+
+    - name: Create REVISION file in the release path
+      copy: content="{{ git_head_hash.stdout }}" dest={{ release_path }}/REVISION
+
+    #
+    # set release symlinks
+    #
+
+    - name: Set assets link
+      file: src={{ shared_path }}/assets path={{ release_path }}/public/assets state=link
+
+    - name: Set tmp link
+      file: src={{ shared_path }}/tmp path={{ release_path }}/tmp state=link
+
+    - name: Set log link
+      file: src={{ shared_path }}/log path={{ release_path }}/log state=link
+
+    #
+    # prepare app
+    #
+
+    - name: Copy .env file
+      template: src=environments/{{ansible_env_name}}/{{ansible_hostname}}.env dest={{ release_path }}/.env
+
+    - name: Copy database.yml
+      template: src=configs/database.yml dest={{ release_path }}/config
+
+    - set_fact: rvm_wrapper_command="cd {{ release_path }} && RAILS_ENV={{ rails_env_name }} rvm ruby-{{ ruby_version }}@{{ full_gemset_name }} --create do"
+
+    - name: Run bundle install
+      shell: "{{ rvm_wrapper_command }} bundle install --path {{ shared_path }}/bundle --deployment --without development test"
+
+    - name: Run db:migrate
+      shell: "{{ rvm_wrapper_command }} rake db:migrate"
+
+    - name: Precompile assets
+      shell: "{{ rvm_wrapper_command }} rake assets:precompile"
+
+    - name: Update app version
+      file: src={{ release_path }} path={{ app_path }}/current state=link

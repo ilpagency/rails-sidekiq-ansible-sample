@@ -16,6 +16,7 @@ pickle-email-*.html
 # TODO Comment out this rules if you are OK with secrets been uploaded to the repo
 /config/secrets.yml
 /config/database.yml
+config/database.yml
 
 ## Environment normalisation:
 /.bundle

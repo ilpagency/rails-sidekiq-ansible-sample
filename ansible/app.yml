@@ -3,14 +3,14 @@
   tasks:
     - include: tasks/_set_vars.yml tags=always
 
-    - set_fact: socks_path={{ shared_path }}/tmp/unicorn
+    - set_fact: socks_path={{ shared_path }}/tmp/socks
       tags: always
 
     - name: Ensure sockets directory exists
       file: path={{ socks_path }} state=directory
       tags: always
 
-    - set_fact: app_sock={{ socks_path }}/ilp-app-unicorn.sock
+    - set_fact: app_sock={{ socks_path }}/app.sock
       tags: always
 
     - set_fact: pids_path={{ shared_path }}/tmp/pids
